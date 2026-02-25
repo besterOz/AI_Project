@@ -73,30 +73,76 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem: SearchProblem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
-    "*** YOUR CODE HERE ***"
+    fringe = util.Stack() 
+    visited = set()
+    
+    start_state = problem.getStartState()
+    fringe.push((start_state, [])) 
+    
+    while not fringe.isEmpty():
+        current_state, actions = fringe.pop()
+        
+        if problem.isGoalState(current_state):
+            return actions
+            
+        if current_state not in visited:
+            visited.add(current_state)
+            
+            for successor, action, stepCost in problem.getSuccessors(current_state):
+                new_actions = actions + [action]
+                fringe.push((successor, new_actions))
+                
+    return []
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    fringe = util.Queue() 
+    visited = set()
+    
+    start_state = problem.getStartState()
+    fringe.push((start_state, [])) 
+    
+    while not fringe.isEmpty():
+        current_state, actions = fringe.pop()
+        
+        if problem.isGoalState(current_state):
+            return actions
+            
+        if current_state not in visited:
+            visited.add(current_state)
+            
+            for successor, action, stepCost in problem.getSuccessors(current_state):
+                new_actions = actions + [action]
+                fringe.push((successor, new_actions))
+                
+    return []
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    fringe = util.PriorityQueue()
+    visited = set()
+    
+    start_state = problem.getStartState()
+    fringe.push((start_state, []), 0) 
+    
+    while not fringe.isEmpty():
+        current_state, actions = fringe.pop()
+        
+        if problem.isGoalState(current_state):
+            return actions
+            
+        if current_state not in visited:
+            visited.add(current_state)
+            for successor, action, stepCost in problem.getSuccessors(current_state):
+                new_actions = actions + [action]
+                cost = problem.getCostOfActions(new_actions) 
+                fringe.push((successor, new_actions), cost)
+                
+    return []
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -109,6 +155,27 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    fringe = util.PriorityQueue()
+    visited = set()
+    
+    start_state = problem.getStartState()
+    fringe.push((start_state, []), 0) 
+    
+    while not fringe.isEmpty():
+        current_state, actions = fringe.pop()
+        
+        if problem.isGoalState(current_state):
+            return actions
+            
+        if current_state not in visited:
+            visited.add(current_state)
+            for successor, action, stepCost in problem.getSuccessors(current_state):
+                new_actions = actions + [action]
+                cost = problem.getCostOfActions(new_actions)
+                priority = cost + heuristic(successor, problem) 
+                fringe.push((successor, new_actions), priority)
+                
+    return []
     util.raiseNotDefined()
 
 
